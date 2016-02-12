@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+#*-* coding: utf-8 *-*
+
+import sys
+
+if len(sys.argv) != 2:
+	print "Invalid parameters."
+	sys.exit(1)
+
+print len(sys.argv[1])

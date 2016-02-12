@@ -1,0 +1,48 @@
+#!/bin/bash
+#############################  BASH SUPPORT ################################
+
+CONNECTED=0
+WLAN=""
+
+. ./functions.sh
+
+run(){
+	while [ 1 ]; do
+		ping -c 1 google.com.br
+		if [ "$?" != "0" ]; then
+			pos=0
+			if [ "$CONNECTED" == "0" ] ;then
+				essids=$(iwlist scanning | grep ESSID)
+				for x in $essids; do
+					let len="$(python /usr/share/wifi-lan/strlen $x)-1"
+					ESSID[$pos]=$(echo $x | cut -c8-$len)
+					let pos=$pos+1
+				done
+			fi
+
+			let pos=$pos-1
+			CONNECTED=0
+			for x in $(range -s 0 -e $pos); do
+				if [ "$WLAN" == "${ESSIS[$x]}" ] ; then
+					CONNECTED=1
+					break
+				fi
+			done
+
+			if [ "$CONNECTED" == "0" ]; then
+				reconnect
+				if [ "$?" == "0" ]; then
+					CONNECTED=1
+				fi
+			fi
+
+			[[ "$CONNECTED" == "1" ]] &&
+				sleep 10 ||
+				sleep 1
+		else
+			sleep 10
+		fi
+	done
+}
+
+run
