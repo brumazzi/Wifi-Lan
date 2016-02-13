@@ -31,6 +31,8 @@ ifconfig $dev up || exit 2
 
 check(){
 	while [ 1 ]; do
+		res=$(cat /var/log/wifi-lan.log)
+		[[ "$res" ]] && exit 255
 		ip=$(ifconfig $dev | grep inet)
 		[[ "$ip" ]] ||
 			reconnect $dev
