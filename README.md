@@ -20,7 +20,7 @@ Ex:
 
 . /usr/share/wifi-lan/wifi-lan
 
-run &
+check &
 ```
 Use `wifi-add` to insert or alter a new wifi host.
 ```
