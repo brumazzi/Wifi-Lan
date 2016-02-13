@@ -1,48 +1,39 @@
 #!/bin/bash
-#############################  BASH SUPPORT ################################
+#===============================================================================
+#
+#          FILE: wifi-lan
+# 
+#   DESCRIPTION: Network Manager
+# 
+#       OPTIONS: ---
+#  REQUIREMENTS: ---
+#          BUGS: ---
+#         NOTES: ---
+#        AUTHOR: DANIEL B. BRUMAZZI (Brumazzi), brumazzi_daniel@yahoo.com.br
+#  ORGANIZATION: 
+#       CREATED: 12-02-2016 13:03
+#      REVISION:  ---
+#===============================================================================
 
-CONNECTED=0
-WLAN=""
+set -o nounset                              # Treat unset variables as an error
 
-. ./functions.sh
+. /usr/share/wifi-lan/functions.sh
 
-run(){
+dev=$(ip addr | grep wlan0)
+[[ "$dev" ]] &&
+	dev="wlan0" ||
+	dev=$(ip addr | grep wlp3s0)
+[[ "$dev" ]] &&
+	dev="wlp3s0" ||
+	exit 1
+
+ifconfig $dev up || exit 2
+
+check(){
 	while [ 1 ]; do
-		ping -c 1 google.com.br
-		if [ "$?" != "0" ]; then
-			pos=0
-			if [ "$CONNECTED" == "0" ] ;then
-				essids=$(iwlist scanning | grep ESSID)
-				for x in $essids; do
-					let len="$(python /usr/share/wifi-lan/strlen $x)-1"
-					ESSID[$pos]=$(echo $x | cut -c8-$len)
-					let pos=$pos+1
-				done
-			fi
-
-			let pos=$pos-1
-			CONNECTED=0
-			for x in $(range -s 0 -e $pos); do
-				if [ "$WLAN" == "${ESSIS[$x]}" ] ; then
-					CONNECTED=1
-					break
-				fi
-			done
-
-			if [ "$CONNECTED" == "0" ]; then
-				reconnect
-				if [ "$?" == "0" ]; then
-					CONNECTED=1
-				fi
-			fi
-
-			[[ "$CONNECTED" == "1" ]] &&
-				sleep 10 ||
-				sleep 1
-		else
-			sleep 10
-		fi
+		ip=$(ifconfig $dev | grep inet)
+		[[ "$ip" ]] ||
+			reconnect $dev
+		sleep 5
 	done
 }
-
-run

@@ -1,4 +1,24 @@
 #!/bin/bash
+#===============================================================================
+#
+#          FILE: wifi-add
+# 
+#         USAGE: wifi-add ESSID PASSWORD
+# 
+#   DESCRIPTION: Add networks
+# 
+#       OPTIONS: ---
+#  REQUIREMENTS: ---
+#          BUGS: ---
+#         NOTES: ---
+#        AUTHOR: DANIEL B. BRUMAZZI (Brumazzi), brumazzi_daniel@yahoo.com.br
+#  ORGANIZATION: 
+#       CREATED: 12-02-2016 13:01
+#      REVISION:  ---
+#===============================================================================
+
+set -o nounset                              # Treat unset variables as an error
+
 
 [[ "$EUID" != "0" ]] &&
 	echo "Permision deined!" &&
