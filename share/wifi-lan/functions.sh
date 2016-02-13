@@ -47,5 +47,6 @@ reconnect(){
 				fi
 			done
 		done
+		sleep 2
 	done
 }
