@@ -15,14 +15,15 @@
 #      REVISION:  ---
 #===============================================================================
 
-set -o nounset                              # Treat unset variables as an error
+#set -o nounset                              # Treat unset variables as an error
 
 . /usr/share/wifi-lan/functions.sh
+#. ./functions.sh
 
 dev=$(ip addr | grep wlan0)
 [[ "$dev" ]] &&
 	dev="wlan0" ||
-	dev=$(ip addr | grep wlp3s0)
+	dev=$(ip addr | grep wlp3s0) &&
 [[ "$dev" ]] &&
 	dev="wlp3s0" ||
 	exit 1
@@ -32,9 +33,9 @@ ifconfig $dev up || exit 2
 check(){
 	while [ 1 ]; do
 		res=$(cat /var/log/wifi-lan.log)
-		[[ "$res" ]] && exit 255
+		[[ "$res" ]] || exit 255
 		ip=$(ifconfig $dev | grep inet)
-		[[ "$ip" ]] ||
+		[[ "$ip" == "" ]] &&
 			reconnect $dev
 		sleep 5
 	done
