@@ -22,11 +22,11 @@ range(){
 
 reconnect(){
 	while [ "loop" ]; do
+		[[ "$(ifconfig | grep $dev)" == "" ]] &&
+			ifconfig $dev up
 		on=$(ps aux | grep wpa_su | wc -l)
 		[[ "$on" -gt "1" ]] &&
 			killall -s TERM wpa_supplicant -w &&
-			[[ "$(ifconfig | grep $dev)" ]] &&
-				ifconfig $dev up
 		pos=0
 		essids=$(iwlist $1 scanning | grep ESSID)
 		for x in $(echo $essids | tr '"' '\n' | grep -v ':'); do
