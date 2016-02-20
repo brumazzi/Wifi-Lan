@@ -30,6 +30,8 @@ dev=$(ip addr | grep wlan0)
 
 ifconfig $dev up || exit 2
 
+[[ -f "/var/log/wifi-lan.log" ]] || touch /var/log/wifi-lan.log
+
 check(){
 	while [ 1 ]; do
 		res=$(cat /var/log/wifi-lan.log)
